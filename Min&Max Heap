@@ -12,69 +12,69 @@ template <class H> class Max_Heap : public PriorityQueue<H>{
 	private:
 		H **A;   							//puntatore a puntore
 		int len; 							// lunghezza array
-		int heapsize; 						//lunghezza heap
-		int left(int i){return i<<1;}		//figlio sinistro
-		int right(int i){return (i<<1)|1;}	//figlio destro
-		int parent(int i){return i>>1;}		//padre
-		void scambia(H i, H j){				//scambia due valori
+		int heapsize; 							//lunghezza heap
+		int left(int i){return i<<1;}					//figlio sinistro
+		int right(int i){return (i<<1)|1;}				//figlio destro
+		int parent(int i){return i>>1;}					//padre
+		void scambia(H i, H j){						//scambia due valori
 			H*tmp = A[i];
 			A[i] = A[j];
 			A[j] = tmp;
 		}
-		H confronta_max(H *a, H *b){		//confronta due valori
+		H confronta_max(H *a, H *b){					//confronta due valori
 			return (*a)-(*b);
 		}
-		void max_heapify(H i){				// heapify
-			if(i>heapsize) return;			//se i > lung. heap return
-			int l = left(i);				//assegna figlio sinistro a l
-			int r = right(i);				//assegna figlio destro a r
+		void max_heapify(H i){				   		//heapify
+			if(i>heapsize) return;					//se i > lung. heap return
+			int l = left(i);					//assegna figlio sinistro a l
+			int r = right(i);					//assegna figlio destro a r
 			int p = i;						//assegna i (padre) a p
 			if(l<=heapsize && confronta_max(A[l],A[p])>0) p = l;	//se l è minore di lung. heap e f.sinistro-padre>0 (f.sinistro è maggiore di padre) allora p =l
 			if(r<=heapsize && confronta_max(A[r],A[p])>0) p = r;	//se l è minore di lung. heap e f.destro-padre>0 (f.destro è maggiore di padre) allora p =r
-			if(p == i) return;				// se i non è cambiato allora return
-			scambia(i,p);					//scambia i con il nuovo valore più grande( o destro o sinistro)
-			max_heapify(p);					// si riesegue, fino a creare un max heap
+			if(p == i) return;					// se i non è cambiato allora return
+			scambia(i,p);						//scambia i con il nuovo valore più grande( o destro o sinistro)
+			max_heapify(p);						// si riesegue, fino a creare un max heap
 		}
 	public:
-		Max_Heap(int size){					//costruttore, prende la lunghezza in input
-			this->A = new H*[size];			//A punta a array di puntatori
-			this->len=size;  				//lunghezza array = size
-			this->heapsize=0;				//lunghezza heap inizialmente = 0
+		Max_Heap(int size){						//costruttore, prende la lunghezza in input
+			this->A = new H*[size];					//A punta a array di puntatori
+			this->len=size;  					//lunghezza array = size
+			this->heapsize=0;					//lunghezza heap inizialmente = 0
 		}
-		Max_Heap<H>* enqueue(H x){			//funzione, inserisce un numero e lo posiziona (secondo regole max-heap)
-			if(heapsize == len-1) return this;	// se la lung. heap è = a lung.array return
-			heapsize += 1;					//si aumenta lung.heap di 1
-			A[heapsize] = new H(x);			//si aggiunge un nuovo elemento nella nuova posizione dell'array
-			int i = heapsize;				//i = lung.heap
+		Max_Heap<H>* enqueue(H x){					//funzione, inserisce un numero e lo posiziona (secondo regole max-heap)
+			if(heapsize == len-1) return this;			// se la lung. heap è = a lung.array return
+			heapsize += 1;						//si aumenta lung.heap di 1
+			A[heapsize] = new H(x);					//si aggiunge un nuovo elemento nella nuova posizione dell'array
+			int i = heapsize;					//i = lung.heap
 			while( i>1 && confronta_max(A[i],A[parent(i)])>0){	//si esegue heap a ritroso partendo dal nuovo elemento, finchè i>1 e se il nuovo el.aggiunto è > del padre allora..
-				scambia(i,parent(i));		//scambia il nuovo elemento con il padre perchè i(il nuovo el.) è più grande, regole max heap
-				i=parent(i);				//il nuovo elemento i è nella posizione del padre ora, perchè è stato scambiato, quindi si riesegue while
+				scambia(i,parent(i));				//scambia il nuovo elemento con il padre perchè i(il nuovo el.) è più grande, regole max heap
+				i=parent(i);					//il nuovo elemento i è nella posizione del padre ora, perchè è stato scambiato, quindi si riesegue while
 			}
 			return this;
 		}
-		H* extract(){						//estrae il massimo dall heap
-			if(heapsize==0) return NULL;	//se lung. heap = 0 allora return puntatore a null
-			scambia(1,heapsize);			//scambia il primo el. (il più grande) e lo mette nell'ultima posizione
+		H* extract(){							//estrae il massimo dall heap
+			if(heapsize==0) return NULL;				//se lung. heap = 0 allora return puntatore a null
+			scambia(1,heapsize);					//scambia il primo el. (il più grande) e lo mette nell'ultima posizione
 			heapsize--;						//si diminuisce lung.heap, escludendo il max
-			max_heapify(1);					//la prima pos. c'è il più piccolo, quindi si riesegue un heapify per ricreare un max heap
-			return A[heapsize+1];			//ritorna un puntatore al più grande el. chhe si trova fuori lung.heap
+			max_heapify(1);						//la prima pos. c'è il più piccolo, quindi si riesegue un heapify per ricreare un max heap
+			return A[heapsize+1];					//ritorna un puntatore al più grande el. chhe si trova fuori lung.heap
 		}
-		void print(){						//stampa il max heap
+		void print(){							//stampa il max heap
 			for(int i = 1; i <= heapsize; i++){
 				cout<< *A[i]<<" ";
 			}
 			cout<<endl;
 		}
 		//la funzione print_heapsort si può ottimizzare
-		void print_heapsort(){				//stampa heap in ordine crescente
-			int count = 2;					//contatore per tenere traccia della lung.heap (perchè si andrà a diminuire heap per fare heapify)
-			for(int i = heapsize; i>1; i--){	//for, prende il primo el.(il più grande) e lo scambia con l'ultimo riducendo heapsize
-				scambia(1,heapsize);		//scambia primo el. con ultimo
-				heapsize = heapsize-1;		//diminuisce heapsize, perchè si riesegua un heapify per creare un max heap che usa lung. heap
+		void print_heapsort(){						//stampa heap in ordine crescente
+			int count = 2;						//contatore per tenere traccia della lung.heap (perchè si andrà a diminuire heap per fare heapify)
+			for(int i = heapsize; i>1; i--){			//for, prende il primo el.(il più grande) e lo scambia con l'ultimo riducendo heapsize
+				scambia(1,heapsize);				//scambia primo el. con ultimo
+				heapsize = heapsize-1;				//diminuisce heapsize, perchè si riesegua un heapify per creare un max heap che usa lung. heap
 				count++;					//contatore per heap cresce
-				max_heapify(1);				//si ricrea un max heap con funzione heapify
+				max_heapify(1);					//si ricrea un max heap con funzione heapify
 			}
-			for(int i = 1; i<count; i++){	//stampa heap in ordine crescente
+			for(int i = 1; i<count; i++){				//stampa heap in ordine crescente
 				cout<< *A[i]<<" ";
 			}
 			cout<<endl;	
@@ -85,16 +85,16 @@ template <class H> class Min_Heap : public PriorityQueue<H>{
 	private:
 		H **A;   							//puntatore a puntore
 		int len; 							// lunghezza array
-		int heapsize; 						//lunghezza heap
-		int left(int i){return i<<1;}		//figlio sinistro
-		int right(int i){return (i<<1)|1;}	//figlio destro
-		int parent(int i){return i>>1;}		//padre
-		void scambia(H i, H j){				//scambia due valori
+		int heapsize; 							//lunghezza heap
+		int left(int i){return i<<1;}					//figlio sinistro
+		int right(int i){return (i<<1)|1;}				//figlio destro
+		int parent(int i){return i>>1;}					//padre
+		void scambia(H i, H j){						//scambia due valori
 			H*tmp = A[i];
 			A[i] = A[j];
 			A[j] = tmp;
 		}
-		H confronta_min(H *a, H *b){		//confronta due valori
+		H confronta_min(H *a, H *b){					//confronta due valori
 			return (*a)-(*b);
 		}
 		void min_heapify(H x){
@@ -138,15 +138,15 @@ template <class H> class Min_Heap : public PriorityQueue<H>{
 			}
 			cout<<endl;
 		}
-		void print_heapsort(){	//stampa in ordine crescente
+		void print_heapsort(){						//stampa in ordine crescente
 			int count = 1;
-			for(int i = heapsize; i>1; i--){	//porta il più piccolo in coda
+			for(int i = heapsize; i>1; i--){			//porta il più piccolo in coda
 				scambia(1,heapsize);
 				heapsize--;
 				count++;
 				min_heapify(1);
 			}
-			for(int i = count; i>=1; i--){	//i piu piccoli sono in coda, quindi si parte dall'ultimo elemento per stampare
+			for(int i = count; i>=1; i--){				//i piu piccoli sono in coda, quindi si parte dall'ultimo elemento per stampare
 				cout<<*A[i]<<" ";
 			}
 			cout<<endl;
